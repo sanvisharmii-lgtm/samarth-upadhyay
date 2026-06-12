@@ -1,0 +1,340 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
+const metadata = {
+  title: 'AIO Tracker | Community Engine',
+  description: 'Access the SEO data network and manage keyword configurations.',
+  ignoreTitleTemplate: true,
+};
+---
+
+<Layout metadata={metadata}>
+  <main class="min-h-screen bg-gray-50 dark:bg-slate-900 p-4 sm:p-8 font-sans text-gray-900 dark:text-gray-100">
+    <div class="max-w-5xl mx-auto flex flex-col gap-6">
+      
+      <header class="flex items-center justify-between mb-4">
+        <a href="/" class="flex items-center gap-4 group">
+          <div class="w-12 h-12 shrink-0 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-lg font-bold tracking-tighter transition-transform group-hover:scale-105 select-none">
+            SU
+          </div>
+          <span class="font-bold text-lg tracking-tight text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+            Samarth Upadhyay
+          </span>
+        </a>
+        <div id="auth-status-badge" class="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500 select-none">
+          <Icon name="tabler:lock" class="w-5 h-5" /> Authenticate
+        </div>
+      </header>
+
+      <div class="pb-6 border-b border-gray-200 dark:border-slate-700">
+        <h1 class="text-4xl font-extrabold tracking-tighter">AIO Tracker Network</h1>
+        <p class="text-base text-gray-600 dark:text-slate-400 font-medium mt-2">Centralized AI Overview telemetry and tracking configuration.</p>
+      </div>
+
+      <section id="view-auth" class="flex flex-col gap-6 max-w-xl mx-auto w-full mt-4">
+        
+        <div class="flex bg-gray-200 dark:bg-slate-800 p-1 rounded-xl">
+          <button id="btn-tab-login" class="flex-1 py-3 text-sm font-bold rounded-lg bg-white dark:bg-slate-700 shadow-sm transition-all text-gray-900 dark:text-white">Login</button>
+          <button id="btn-tab-register" class="flex-1 py-3 text-sm font-bold rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-all">Generate PIN</button>
+        </div>
+
+        <div id="form-login-container" class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h2 class="text-xl font-bold tracking-tight mb-6 flex items-center gap-2"><Icon name="tabler:login" class="w-6 h-6" /> Access Workspace</h2>
+          <form id="login-form" class="flex flex-col gap-4">
+            <input 
+              type="text" id="login-pin" placeholder="Enter your 6-character PIN" 
+              class="w-full px-4 py-4 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-center font-mono text-lg uppercase tracking-widest"
+              required maxlength="6"
+            />
+            <button type="submit" class="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:opacity-90 transition-opacity">
+              Authenticate
+            </button>
+          </form>
+        </div>
+
+        <div id="form-register-container" class="hidden bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-sm">
+          <h2 class="text-xl font-bold tracking-tight mb-2 flex items-center gap-2"><Icon name="tabler:key" class="w-6 h-6" /> Generate Custom PIN</h2>
+          <p class="text-xs text-gray-500 dark:text-slate-400 mb-6 leading-relaxed">PIN must be exactly 6 characters long and contain exactly 2 letters and 4 numbers.</p>
+          <form id="register-form" class="flex flex-col gap-4">
+            <input 
+              type="email" id="register-email" placeholder="Recovery Email Address" 
+              class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm"
+              required
+            />
+            <input 
+              type="text" id="register-pin" placeholder="Create PIN (e.g., AB1234)" 
+              class="w-full px-4 py-4 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-center font-mono text-lg uppercase tracking-widest"
+              required maxlength="6"
+            />
+            <button type="submit" class="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:opacity-90 transition-opacity">
+              Register Node
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-workspace" class="hidden flex-col gap-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <div class="lg:col-span-5 bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold tracking-tight flex items-center gap-2"><Icon name="tabler:settings" class="w-6 h-6" /> Target Keywords</h2>
+                <button id="btn-logout" class="text-xs font-bold text-red-500 hover:text-red-700 transition-colors uppercase tracking-widest">Disconnect</button>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-slate-400 mb-6">
+                Define up to 15 search queries. The Chrome extension will automatically extract data based on this configuration.
+              </p>
+              <form id="keywords-form" class="flex flex-col gap-4">
+                <textarea 
+                  id="user-keywords" rows="8" placeholder="Enter keywords (one per line)..." 
+                  class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm font-mono whitespace-pre resize-none"
+                ></textarea>
+                <button type="submit" class="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                  <Icon name="tabler:device-floppy" class="w-5 h-5" /> Save Configuration
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 bg-gray-50 dark:bg-slate-900 flex flex-col gap-6">
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-sm">
+              <h2 class="text-xl font-bold tracking-tight mb-6 flex items-center gap-2"><Icon name="tabler:world-search" class="w-6 h-6" /> Global Database Query</h2>
+              <form id="search-form" class="flex flex-col sm:flex-row gap-4">
+                <div class="relative flex-1">
+                  <Icon name="tabler:search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input 
+                    type="text" id="search-keyword" placeholder="Query community results by exact keyword..." 
+                    class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    required
+                  />
+                </div>
+                <button type="submit" class="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:opacity-90 transition-opacity">
+                  Fetch
+                </button>
+              </form>
+            </div>
+
+            <div id="query-results" class="hidden bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-200 dark:border-slate-700 flex-1">
+              <h3 class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-4">Extracted Data</h3>
+              <div id="results-container" class="space-y-6"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const WORKER_URL = "https://aio-tracker.samarth-upadhyay.workers.dev";
+  let sessionPin: string | null = null;
+
+  // UI Elements
+  const viewAuth = document.getElementById('view-auth');
+  const viewWorkspace = document.getElementById('view-workspace');
+  const authStatusBadge = document.getElementById('auth-status-badge');
+  
+  const tabLogin = document.getElementById('btn-tab-login');
+  const tabRegister = document.getElementById('btn-tab-register');
+  const formLoginContainer = document.getElementById('form-login-container');
+  const formRegisterContainer = document.getElementById('form-register-container');
+
+  // --- UI Routing & State ---
+  function setAuthenticatedState(pin: string, keywordsData: string = "[]") {
+    sessionPin = pin;
+    localStorage.setItem('aio_pin', pin);
+    
+    if (viewAuth && viewWorkspace && authStatusBadge) {
+      viewAuth.classList.add('hidden');
+      viewWorkspace.classList.remove('hidden');
+      viewWorkspace.classList.add('flex');
+      authStatusBadge.innerHTML = `<div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> Node: ${pin}`;
+    }
+
+    // Populate Keywords
+    const keywordBox = document.getElementById('user-keywords') as HTMLTextAreaElement;
+    try {
+      const parsed = JSON.parse(keywordsData);
+      if (Array.isArray(parsed)) keywordBox.value = parsed.join('\n');
+    } catch(e) { /* ignore parse error */ }
+  }
+
+  function handleLogout() {
+    sessionPin = null;
+    localStorage.removeItem('aio_pin');
+    window.location.reload();
+  }
+
+  // Auto-Login Check
+  window.addEventListener('DOMContentLoaded', async () => {
+    const savedPin = localStorage.getItem('aio_pin');
+    if (savedPin) {
+      // Validate saved PIN with server silently
+      try {
+        const res = await fetch(`${WORKER_URL}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin: savedPin })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setAuthenticatedState(savedPin, data.keywords);
+        } else {
+          localStorage.removeItem('aio_pin');
+        }
+      } catch (e) {
+        console.error("Session verification failed");
+      }
+    }
+  });
+
+  document.getElementById('btn-logout')?.addEventListener('click', handleLogout);
+
+  // --- Auth Tabs ---
+  tabLogin?.addEventListener('click', () => {
+    formRegisterContainer?.classList.add('hidden');
+    formLoginContainer?.classList.remove('hidden');
+    tabLogin.classList.replace('bg-transparent', 'bg-white');
+    tabLogin.classList.replace('text-gray-500', 'text-gray-900');
+    tabRegister?.classList.replace('bg-white', 'bg-transparent');
+    tabRegister?.classList.replace('text-gray-900', 'text-gray-500');
+  });
+
+  tabRegister?.addEventListener('click', () => {
+    formLoginContainer?.classList.add('hidden');
+    formRegisterContainer?.classList.remove('hidden');
+    tabRegister.classList.replace('bg-transparent', 'bg-white');
+    tabRegister.classList.replace('text-gray-500', 'text-gray-900');
+    tabLogin?.classList.replace('bg-white', 'bg-transparent');
+    tabLogin?.classList.replace('text-gray-900', 'text-gray-500');
+  });
+
+  // --- Format Validator ---
+  function validatePinFormat(pin: string) {
+    if (pin.length !== 6) return false;
+    const letters = pin.match(/[A-Za-z]/g) || [];
+    const numbers = pin.match(/[0-9]/g) || [];
+    return letters.length === 2 && numbers.length === 4;
+  }
+
+  // --- Forms ---
+  document.getElementById('register-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const email = (document.getElementById('register-email') as HTMLInputElement).value;
+    const pin = (document.getElementById('register-pin') as HTMLInputElement).value.toUpperCase();
+
+    if (!validatePinFormat(pin)) {
+      alert("PIN format error: Must be 6 characters containing exactly 2 letters and 4 numbers.");
+      return;
+    }
+
+    btn.innerText = "Registering...";
+    try {
+      const res = await fetch(`${WORKER_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin, email })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        setAuthenticatedState(pin);
+      } else {
+        alert(data.error || "Registration failed.");
+      }
+    } finally { btn.innerText = "Register Node"; }
+  });
+
+  document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const pin = (document.getElementById('login-pin') as HTMLInputElement).value.toUpperCase();
+
+    btn.innerText = "Authenticating...";
+    try {
+      const res = await fetch(`${WORKER_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        setAuthenticatedState(pin, data.keywords);
+      } else {
+        alert(data.error || "Login failed.");
+      }
+    } finally { btn.innerText = "Authenticate"; }
+  });
+
+  // --- Keywords Form ---
+  document.getElementById('keywords-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!sessionPin) return;
+
+    const btn = e.target.querySelector('button');
+    const rawData = (document.getElementById('user-keywords') as HTMLTextAreaElement).value;
+    const keywords = rawData.split('\n').map(k => k.trim()).filter(k => k.length > 0);
+
+    if (keywords.length > 15) return alert("Maximum limit exceeded. Please enter up to 15 keywords.");
+
+    btn.innerHTML = `<span class="animate-pulse">Saving...</span>`;
+    try {
+      const res = await fetch(`${WORKER_URL}/update-keywords`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: sessionPin, keywords })
+      });
+      if (res.ok) alert("Configuration saved successfully.");
+      else alert("Failed to save keywords.");
+    } finally { btn.innerHTML = `Save Configuration`; }
+  });
+
+  // --- Search Form ---
+  document.getElementById('search-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const keyword = (document.getElementById('search-keyword') as HTMLInputElement).value;
+    const btn = e.target.querySelector('button');
+    const container = document.getElementById('results-container');
+    const panel = document.getElementById('query-results');
+
+    btn.innerText = "Fetching...";
+    try {
+      const res = await fetch(`${WORKER_URL}/results?keyword=${encodeURIComponent(keyword)}`);
+      if (res.ok && container && panel) {
+        const data = await res.json();
+        panel.classList.remove('hidden');
+        container.innerHTML = '';
+
+        if (data.length === 0) {
+          container.innerHTML = `<p class="text-gray-500 text-sm">No telemetry found for this query.</p>`;
+        } else {
+          data.forEach((entry: any) => {
+            const aiOverviewRaw = entry.ai_overview || "No data.";
+            const sourceLinks = entry.source_links ? JSON.parse(entry.source_links) : [];
+            const html = `
+              <div class="p-6 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-200 dark:border-slate-800 pb-2">
+                  <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Node: ${entry.user_pin}</span>
+                  <span class="text-xs text-gray-400">${new Date(entry.timestamp).toLocaleString()}</span>
+                </div>
+                <div class="text-sm text-gray-700 dark:text-slate-300 mb-4 whitespace-pre-wrap">${aiOverviewRaw}</div>
+                <h4 class="font-bold mb-2 text-xs uppercase tracking-widest text-gray-500">Sources (${sourceLinks.length})</h4>
+                <ul class="space-y-1 text-xs font-mono text-blue-600 dark:text-blue-400">
+                  ${sourceLinks.map((link: string) => `<li class="truncate"><a href="${link}" target="_blank" class="hover:underline">${link}</a></li>`).join('')}
+                </ul>
+              </div>
+            `;
+            container.innerHTML += html;
+          });
+        }
+      }
+    } finally { btn.innerText = "Fetch"; }
+  });
+</script>
