@@ -1,0 +1,119 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+<main id="view-workspace" class="hidden flex-1 h-[calc(100vh-70px)] overflow-hidden">
+  
+  <aside class="w-64 shrink-0 bg-white dark:bg-[#1C1D21] border-r border-gray-200 dark:border-gray-800 flex flex-col h-full z-10">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between bg-[#F8F9FA] dark:bg-[#131418]">
+      <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Reports</span>
+      <button id="btn-open-keywords" class="text-blue-600 hover:text-blue-800 transition-colors" title="Edit Queries">
+        <Icon name="tabler:settings" class="w-4 h-4" />
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto py-2">
+      <ul id="sidebar-keyword-list" class="flex flex-col"></ul>
+    </div>
+  </aside>
+
+  <section class="flex-1 flex flex-col bg-[#F8F9FA] dark:bg-[#131418] overflow-y-auto h-full">
+    <div class="max-w-[1000px] w-full mx-auto p-6 sm:p-8 flex flex-col gap-6">
+      
+      <div id="results-loading" class="hidden items-center justify-center h-48 text-sm text-gray-500">
+        <Icon name="tabler:loader" class="w-5 h-5 animate-spin mr-2" /> Loading report data...
+      </div>
+      
+      <div id="results-empty" class="flex flex-col items-center justify-center h-64 text-center border border-dashed border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-[#1c1d21] mt-4">
+        <p class="text-sm text-gray-500">Select a query from the sidebar to view metrics.</p>
+      </div>
+
+      <div id="results-content" class="hidden flex-col gap-8 pb-12">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between border-b border-gray-200 dark:border-gray-800 pb-4 gap-4">
+          <div>
+            <p class="text-xs text-gray-500 mb-1 font-medium uppercase tracking-widest">Target Query Snapshot</p>
+            <h1 id="current-keyword-title" class="text-2xl font-medium text-gray-900 dark:text-white"></h1>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-2 bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 px-3 py-1.5 rounded-md shadow-sm h-[34px]">
+              <Icon name="tabler:search" class="w-4 h-4 text-gray-500" />
+              <input type="text" id="url-search" placeholder="Filter URL..." class="text-xs bg-transparent border-none focus:ring-0 text-gray-700 dark:text-gray-300 outline-none p-0 w-[100px]" />
+            </div>
+
+            <div class="flex items-center gap-2 bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 px-3 py-1.5 rounded-md shadow-sm h-[34px]">
+              <Icon name="tabler:calendar" class="w-4 h-4 text-gray-500" />
+              <select id="date-filter" class="text-xs font-medium text-gray-700 dark:text-gray-300 bg-transparent border-none focus:ring-0 cursor-pointer p-0 outline-none appearance-none pr-4">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+                <option value="365">Last 12 months</option>
+                <option value="custom">Custom Date Range...</option>
+              </select>
+            </div>
+
+            <div id="custom-date-picker" class="hidden items-center gap-2 bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 px-2 py-1 rounded-md shadow-sm h-[34px] transition-all">
+              <input type="date" id="custom-start-date" class="text-xs bg-transparent border-none focus:ring-0 text-gray-700 dark:text-gray-300 outline-none p-0 w-[105px] cursor-pointer" />
+              <span class="text-gray-400 text-xs">-</span>
+              <input type="date" id="custom-end-date" class="text-xs bg-transparent border-none focus:ring-0 text-gray-700 dark:text-gray-300 outline-none p-0 w-[105px] cursor-pointer" />
+              <button id="btn-apply-dates" class="ml-1 px-3 py-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 text-xs font-medium rounded hover:bg-blue-100 transition-colors">
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-6">
+          
+          <div class="bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col">
+            <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white">Top Source URLs in AIO</h3>
+              <span id="source-links-list-header" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"></span>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between px-5 py-2 border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-[#131418]/50 text-xs font-medium text-gray-500 uppercase tracking-widest">
+                <span>Extracted Result</span><span>Count</span>
+              </div>
+              <ul id="source-links-list" class="flex flex-col"></ul>
+            </div>
+            <button id="btn-more-sources" class="hidden w-full px-5 py-3 text-xs font-medium text-blue-600 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border-t border-gray-200 dark:border-gray-800 text-left">
+              View more rows
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col">
+            <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white">Top Cited Text References in AIO</h3>
+              <span id="citation-links-list-header" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"></span>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between px-5 py-2 border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-[#131418]/50 text-xs font-medium text-gray-500 uppercase tracking-widest">
+                <span>Extracted Citation</span><span>Count</span>
+              </div>
+              <ul id="citation-links-list" class="flex flex-col"></ul>
+            </div>
+            <button id="btn-more-citations" class="hidden w-full px-5 py-3 text-xs font-medium text-blue-600 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border-t border-gray-200 dark:border-gray-800 text-left">
+              View more rows
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col">
+            <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white">Top Organic Links</h3>
+              <span id="organic-links-list-header" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"></span>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between px-5 py-2 border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-[#131418]/50 text-xs font-medium text-gray-500 uppercase tracking-widest">
+                <span>Extracted Organic Result</span><span>Count</span>
+              </div>
+              <ul id="organic-links-list" class="flex flex-col"></ul>
+            </div>
+            <button id="btn-more-organic" class="hidden w-full px-5 py-3 text-xs font-medium text-blue-600 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border-t border-gray-200 dark:border-gray-800 text-left">
+              View more rows
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
