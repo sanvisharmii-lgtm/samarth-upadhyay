@@ -133,8 +133,13 @@ const loadKeywordData = async (keyword: string) => {
   }
 };
 
-window.addEventListener('DOMContentLoaded', async () => {
+// --- INITIALIZATION WRAPPER ---
+// Bundling everything into a function allows Astro View Transitions to re-execute it on navigation
+const initTrackerApp = async () => {
   
+  // Prevent script from trying to attach listeners if not on the tracker page
+  if (!document.getElementById('view-auth')) return;
+
   // --- Mobile Sidebar Event Listeners ---
   document.getElementById('btn-toggle-sidebar')?.addEventListener('click', () => {
     document.getElementById('workspace-sidebar')?.classList.remove('-translate-x-full');
@@ -178,26 +183,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       showToast("Please select both a start and end date.", "error");
     }
   });
-
-  const savedPin = localStorage.getItem('aio_pin');
-  if (savedPin) {
-    try {
-      const data = await loginNode(savedPin);
-      sessionPin = savedPin;
-      try { userKeywords = JSON.parse(data.keywords || "[]"); } catch {}
-      const kwArea = document.getElementById('user-keywords') as HTMLTextAreaElement;
-      if (kwArea) kwArea.value = userKeywords.join('\n');
-      setWorkspaceView(savedPin);
-      if (userKeywords.length > 0) loadKeywordData(userKeywords[0]);
-      else renderSidebar([], null, loadKeywordData);
-    } catch (e: any) { 
-      if (e.message && (e.message.includes('Invalid') || e.message.includes('Format'))) {
-        localStorage.removeItem('aio_pin'); 
-      } else {
-        showToast("Network issue restoring session. Please reload.", "error");
-      }
-    }
-  }
 
   document.getElementById('btn-tab-login')?.addEventListener('click', () => toggleAuthTabs(true));
   document.getElementById('btn-tab-register')?.addEventListener('click', () => toggleAuthTabs(false));
@@ -316,4 +301,32 @@ window.addEventListener('DOMContentLoaded', async () => {
       }
     }
   });
-});
+
+  // --- Session Restoration (Optimistic UI Fix) ---
+  const savedPin = localStorage.getItem('aio_pin');
+  if (savedPin) {
+    sessionPin = savedPin;
+    // Call UI function immediately to hide the login form
+    setWorkspaceView(savedPin);
+    
+    try {
+      const data = await loginNode(savedPin);
+      try { userKeywords = JSON.parse(data.keywords || "[]"); } catch {}
+      const kwArea = document.getElementById('user-keywords') as HTMLTextAreaElement;
+      if (kwArea) kwArea.value = userKeywords.join('\n');
+      
+      if (userKeywords.length > 0) loadKeywordData(userKeywords[0]);
+      else renderSidebar([], null, loadKeywordData);
+    } catch (e: any) { 
+      if (e.message && (e.message.includes('Invalid') || e.message.includes('Format'))) {
+        localStorage.removeItem('aio_pin'); 
+        window.location.reload(); // Hard reset if PIN is somehow invalid
+      } else {
+        showToast("Network issue restoring session. Please reload.", "error");
+      }
+    }
+  }
+};
+
+// Replaces DOMContentLoaded. Listens for initial load AND Astro View Transitions.
+document.addEventListener('astro:page-load', initTrackerApp);
