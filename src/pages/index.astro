@@ -3,108 +3,68 @@ import Layout from '~/layouts/Layout.astro';
 import { Icon } from 'astro-icon/components';
 
 const metadata = {
-  title: 'Samarth Upadhyay | Senior SEO Analyst',
+  title: 'Samarth Upadhyay | SEO ',
   ignoreTitleTemplate: true,
 };
-
-const skills = [
-  'Agentic Web', 
-  'Technical SEO', 
-  'PostgreSQL', 
-  'SQLGlot', 
-  'Python', 
-  'Astro', 
-  'Schema Markup', 
-  'LLM Pipelines', 
-  'Voice Synthesis'
-];
 ---
 
 <Layout metadata={metadata}>
-  <main class="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900 p-4 sm:p-8 font-sans text-gray-900 dark:text-gray-100">
-    <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 auto-rows-fr">
-      
-      <!-- Profile & Description Panel (Spans 8 columns) -->
-      <div class="md:col-span-8 bg-gray-50 dark:bg-slate-800 rounded-3xl p-8 sm:p-12 border border-gray-200 dark:border-slate-700 flex flex-col justify-center">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-8">
+  <main class="min-h-screen flex items-center justify-center bg-white dark:bg-[#131418] p-4 sm:p-6 lg:p-8 font-sans text-gray-900 dark:text-gray-100">
+    <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+
+      <!-- Profile & Description Panel -->
+      <div class="md:col-span-2 bg-gray-50 dark:bg-[#1c1d21] rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-gray-800 flex flex-col justify-center">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6 mb-6 sm:mb-8">
           <!-- Premium Monogram -->
-          <div class="w-24 h-24 shrink-0 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-3xl font-bold tracking-tighter select-none">
-            SU
-          </div>
           <div>
-            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tighter mb-2">Samarth Upadhyay</h1>
-            <p class="text-xl text-gray-700 dark:text-slate-300 font-medium tracking-tight">Senior SEO Analyst @ Great Learning</p>
-            <p class="text-sm text-gray-500 dark:text-slate-400 mt-2 flex items-center gap-1">
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-1.5">Samarth Upadhyay</h1>
+            <p class="text-lg text-gray-700 dark:text-gray-300 font-medium tracking-tight">SEO</p>
+            <p class="text-base text-gray-500 dark:text-gray-400 mt-1.5 flex items-center gap-1.5">
               <Icon name="tabler:map-pin" class="w-4 h-4" /> Bengaluru, India
             </p>
           </div>
         </div>
-        <p class="text-lg text-gray-600 dark:text-slate-400 max-w-2xl leading-relaxed">
-          Specializing in Agentic Web optimization, programmatic SEO, and high-performance technical architecture. Proven track record in orchestrating scalable, AI-driven content pipelines and deploying robust web protocols for optimal machine readability.
+        <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
+        Hi, I'm an SEO expert focused on turning search traffic into business growth.
         </p>
       </div>
 
-      <!-- Connect Panel (Spans 4 columns) -->
-      <div class="md:col-span-4 bg-gray-900 dark:bg-gray-100 rounded-3xl p-8 border border-gray-800 dark:border-gray-200 text-white dark:text-gray-900 flex flex-col justify-between transition-transform hover:scale-[1.01]">
-        <div>
-          <Icon name="tabler:network" class="w-8 h-8 mb-4 opacity-80" />
-          <h2 class="text-2xl font-bold tracking-tight mb-2">Connect</h2>
-          <p class="opacity-80 text-sm mb-6">Open for discussions regarding technical SEO, web performance, and AI integration.</p>
-        </div>
-        <div class="flex gap-4">
-          <a href="https://github.com/samarth-upadhyay" target="_blank" rel="noopener noreferrer" class="hover:opacity-75 transition-opacity" aria-label="GitHub">
-            <Icon name="tabler:brand-github" class="w-8 h-8" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" class="hover:opacity-75 transition-opacity" aria-label="LinkedIn">
-            <Icon name="tabler:brand-linkedin" class="w-8 h-8" />
-          </a>
-        </div>
-      </div>
+      <!-- Right Column: Stacked Panels -->
+      <div class="md:col-span-1 flex flex-col gap-4 sm:gap-6">
 
-      <!-- Skills Panel (Spans 4 columns) -->
-      <div class="md:col-span-4 bg-gray-50 dark:bg-slate-800 rounded-3xl p-8 border border-gray-200 dark:border-slate-700 transition-transform hover:scale-[1.01]">
-        <div class="flex items-center gap-3 mb-6">
-          <Icon name="tabler:cpu" class="w-6 h-6 text-gray-800 dark:text-gray-200" />
-          <h2 class="text-xl font-bold tracking-tight">Infrastructure</h2>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          {skills.map((skill) => (
-            <span class="px-3 py-1.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
+        <!-- AIO Tracker Tool Link -->
+        <a href="/aio-tracker" class="flex-1 bg-blue-50/50 dark:bg-blue-900/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-blue-100 dark:border-blue-800/30 flex flex-col justify-between transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20 group">
+          <div>
+            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center mb-4">
+              <Icon name="tabler:radar" class="w-5 h-5 group-hover:animate-pulse" />
+            </div>
+            <h2 class="text-xl font-bold tracking-tight mb-2 text-blue-900 dark:text-blue-100">AIO Tracker</h2>
+            <p class="text-base text-blue-800/80 dark:text-blue-200/70 leading-relaxed">
+              AI Overview monitoring Tool.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-blue-700 dark:text-blue-300">
+            Launch Tool <Icon name="tabler:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </a>
 
-      <!-- Knowledge Panel (Spans 4 columns) -->
-      <div class="md:col-span-4 bg-gray-50 dark:bg-slate-800 rounded-3xl p-8 border border-gray-200 dark:border-slate-700 transition-transform hover:scale-[1.01]">
-        <div class="flex items-center gap-3 mb-6">
-          <Icon name="tabler:database" class="w-6 h-6 text-gray-800 dark:text-gray-200" />
-          <h2 class="text-xl font-bold tracking-tight">Knowledge Panel</h2>
-        </div>
-        <ul class="space-y-4 text-sm text-gray-600 dark:text-slate-400">
-          <li class="flex flex-col">
-            <span class="font-bold text-gray-900 dark:text-gray-100">Professional History</span>
-            <span>Great Learning &middot; AppsforBharat</span>
-          </li>
-          <li class="flex flex-col">
-            <span class="font-bold text-gray-900 dark:text-gray-100">Education</span>
-            <span>B.A., BHOJ Open University (PCM)</span>
-          </li>
-        </ul>
-      </div>
+        <!-- Connect Panel -->
+        <div class="flex-1 bg-gray-50 dark:bg-[#1c1d21] rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-800 flex flex-col justify-between">
+          <div>
+            <h2 class="text-xl font-bold tracking-tight mb-2">Connect</h2>
+            <p class="text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+              Always interested in meaningful conversations around search, performance, and intelligent automation.
+            </p>
+          </div>
+          <div class="flex gap-4">
 
-      <!-- AIO Tracker Tool Link (Spans 4 columns) -->
-      <a href="/aio-tracker" class="md:col-span-4 bg-gray-900 dark:bg-gray-100 rounded-3xl p-8 border border-gray-800 dark:border-gray-200 text-white dark:text-gray-900 flex flex-col justify-between transition-transform hover:scale-[1.01] group">
-        <div>
-          <Icon name="tabler:radar" class="w-8 h-8 mb-4 opacity-80 group-hover:animate-pulse" />
-          <h2 class="text-2xl font-bold tracking-tight mb-2">AIO Tracker</h2>
-          <p class="opacity-80 text-sm">Real-time AI Overview monitoring protocol and generative link extraction.</p>
+            <a href="https://www.linkedin.com/in/samarthupadhyay/" target="_blank" rel="noopener noreferrer" class="p-2 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors" aria-label="LinkedIn">
+              <Icon name="tabler:brand-linkedin" class="w-7 h-7" />
+            </a>
+          </div>
         </div>
-        <div class="mt-6 flex items-center gap-2 font-bold text-sm uppercase tracking-widest">
-          Launch Tool <Icon name="tabler:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </div>
-      </a>
+
+      </div>
 
     </div>
   </main>
