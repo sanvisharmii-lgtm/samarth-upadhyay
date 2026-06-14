@@ -1,17 +1,27 @@
 const WORKER_URL = "https://aio-tracker.samarth-upadhyay.workers.dev";
 
-export async function registerNode(pin: string, email: string) {
+// Remove 'pin' from the arguments, only take 'email'
+export async function registerNode(email: string) {
   const res = await fetch(`${WORKER_URL}/register`, {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin, email })
+    method: "POST", 
+    headers: { "Content-Type": "application/json" }, 
+    body: JSON.stringify({ email })
   });
+  
+  const data = await res.json();
   if (!res.ok && res.status !== 400) throw new Error("Server error");
-  return { ok: res.ok, status: res.status };
+  
+  // Return the full data payload which includes the newly generated data.pin
+  return { ok: res.ok, status: res.status, data };
 }
 
 export async function loginNode(pin: string) {
   const res = await fetch(`${WORKER_URL}/login`, {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin })
+    method: "POST", 
+    headers: { "Content-Type": "application/json" }, 
+    body: JSON.stringify({ pin })
   });
+  
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Login failed");
   return data;
@@ -19,8 +29,11 @@ export async function loginNode(pin: string) {
 
 export async function updateKeywords(pin: string, keywords: string[]) {
   const res = await fetch(`${WORKER_URL}/update-keywords`, {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin, keywords })
+    method: "POST", 
+    headers: { "Content-Type": "application/json" }, 
+    body: JSON.stringify({ pin, keywords })
   });
+  
   if (!res.ok) throw new Error("Failed to save configuration");
   return true;
 }

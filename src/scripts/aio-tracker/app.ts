@@ -47,11 +47,6 @@ const aggregateLinks = (entries: any[], type: string) => {
   return Object.entries(counts).sort((a, b) => b[1] - a[1]);
 };
 
-const generateStrictPin = () => {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  return `${letters.charAt(Math.floor(Math.random() * 26))}${letters.charAt(Math.floor(Math.random() * 26))}${Math.floor(1000 + Math.random() * 9000)}`;
-};
-
 // --- Mobile Sidebar Helper ---
 const closeMobileSidebar = () => {
   document.getElementById('workspace-sidebar')?.classList.remove('translate-x-0');
@@ -204,25 +199,30 @@ const initTrackerApp = async () => {
     const emailInput = document.getElementById('register-email') as HTMLInputElement;
     const email = emailInput ? emailInput.value : "";
     
-    let pin = ""; let registered = false;
     try {
-      while (!registered) {
-        pin = generateStrictPin();
-        const res = await registerNode(pin, email);
-        if (res.ok) registered = true;
-      }
-      const pinDisplay = document.getElementById('generated-pin');
-      if (pinDisplay) pinDisplay.innerText = pin;
+      // Call the API with just the email to retrieve the secure server-generated PIN
+      const res = await registerNode(email);
       
-      document.getElementById('register-ui')?.classList.add('hidden');
-      document.getElementById('pin-panel')?.classList.replace('hidden', 'flex');
-      
-      const ackBtn = document.getElementById('btn-acknowledge-pin');
-      if (ackBtn) {
-        ackBtn.onclick = () => {
-          sessionPin = pin; localStorage.setItem('aio_pin', pin);
-          setWorkspaceView(pin); renderSidebar([], null, loadKeywordData);
-        };
+      if (res.ok && res.data && res.data.pin) {
+        const generatedPin = res.data.pin;
+        
+        const pinDisplay = document.getElementById('generated-pin');
+        if (pinDisplay) pinDisplay.innerText = generatedPin;
+        
+        document.getElementById('register-ui')?.classList.add('hidden');
+        document.getElementById('pin-panel')?.classList.replace('hidden', 'flex');
+        
+        const ackBtn = document.getElementById('btn-acknowledge-pin');
+        if (ackBtn) {
+          ackBtn.onclick = () => {
+            sessionPin = generatedPin; 
+            localStorage.setItem('aio_pin', generatedPin);
+            setWorkspaceView(generatedPin); 
+            renderSidebar([], null, loadKeywordData);
+          };
+        }
+      } else {
+        throw new Error("Failed to retrieve PIN from server");
       }
     } catch {
       showToast("Registration failed. Please try again.", "error");
@@ -275,7 +275,7 @@ const initTrackerApp = async () => {
     const keywords = rawData.split('\n').map(k => k.trim()).filter(k => k.length > 0);
     
     if (keywords.length > 30) {
-      showToast("Maximum 15 queries allowed.", "error");
+      showToast("Maximum 30 queries allowed.", "error");
       return;
     }
     
