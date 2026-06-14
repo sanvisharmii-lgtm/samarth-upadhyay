@@ -68,7 +68,7 @@ const filterAndRender = () => {
 };
 
 const loadKeywordData = async (keyword: string) => {
-  closeMobileSidebar(); // Close off-canvas menu on mobile when a query is selected
+  closeMobileSidebar(); 
   
   currentKeyword = keyword;
   sourcesLimit = 10; citationsLimit = 10; organicLimit = 10;
@@ -90,7 +90,6 @@ const loadKeywordData = async (keyword: string) => {
   try {
     const data = await fetchResults(keyword, { days: currentDays, startDate: customStartMs, endDate: customEndMs });
     
-    // Calculate how many database rows (searches) actually contained data for each category
     sourcesSearchCount = data.filter((row: any) => {
       try { return JSON.parse(row.source_links || '[]').length > 0; } catch { return false; }
     }).length;
@@ -129,10 +128,7 @@ const loadKeywordData = async (keyword: string) => {
 };
 
 // --- INITIALIZATION WRAPPER ---
-// Bundling everything into a function allows Astro View Transitions to re-execute it on navigation
 const initTrackerApp = async () => {
-  
-  // Prevent script from trying to attach listeners if not on the tracker page
   if (!document.getElementById('view-auth')) return;
 
   // --- Mobile Sidebar Event Listeners ---
@@ -144,7 +140,6 @@ const initTrackerApp = async () => {
   });
   
   document.getElementById('sidebar-backdrop')?.addEventListener('click', closeMobileSidebar);
-  // --------------------------------------
 
   document.getElementById('url-search')?.addEventListener('input', (e) => {
     currentSearchTerm = (e.target as HTMLInputElement).value.toLowerCase();
@@ -191,21 +186,15 @@ const initTrackerApp = async () => {
   document.getElementById('register-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = (e.target as HTMLElement).querySelector('button');
-    if (btn) {
-      btn.innerHTML = `Generating...`; 
-      btn.setAttribute('disabled', 'true');
-    }
+    if (btn) { btn.innerHTML = `Generating...`; btn.setAttribute('disabled', 'true'); }
     
     const emailInput = document.getElementById('register-email') as HTMLInputElement;
     const email = emailInput ? emailInput.value : "";
     
     try {
-      // Call the API with just the email to retrieve the secure server-generated PIN
       const res = await registerNode(email);
-      
       if (res.ok && res.data && res.data.pin) {
         const generatedPin = res.data.pin;
-        
         const pinDisplay = document.getElementById('generated-pin');
         if (pinDisplay) pinDisplay.innerText = generatedPin;
         
@@ -219,18 +208,12 @@ const initTrackerApp = async () => {
             localStorage.setItem('aio_pin', generatedPin);
             setWorkspaceView(generatedPin); 
             renderSidebar([], null, loadKeywordData);
+            document.getElementById('keyword-modal')?.classList.remove('hidden'); // Auto-open modal
           };
         }
-      } else {
-        throw new Error("Failed to retrieve PIN from server");
-      }
-    } catch {
-      showToast("Registration failed. Please try again.", "error");
-    } finally { 
-      if (btn) {
-        btn.innerHTML = `Create New Node`; 
-        btn.removeAttribute('disabled'); 
-      }
+      } else { throw new Error("Failed to retrieve PIN"); }
+    } catch { showToast("Registration failed.", "error"); } finally { 
+      if (btn) { btn.innerHTML = `Create New Node`; btn.removeAttribute('disabled'); }
     }
   });
 
@@ -240,10 +223,7 @@ const initTrackerApp = async () => {
     const pinInput = document.getElementById('login-pin') as HTMLInputElement;
     const pin = pinInput ? pinInput.value.trim() : "";
     
-    if (btn) {
-      btn.innerText = "Authenticating...";
-      btn.setAttribute('disabled', 'true');
-    }
+    if (btn) { btn.innerText = "Authenticating..."; btn.setAttribute('disabled', 'true'); }
 
     try {
       const data = await loginNode(pin);
@@ -254,15 +234,14 @@ const initTrackerApp = async () => {
       if (kwArea) kwArea.value = userKeywords.join('\n');
       
       setWorkspaceView(pin); 
-      if (userKeywords.length > 0) loadKeywordData(userKeywords[0]);
-      else renderSidebar(userKeywords, null, loadKeywordData);
-    } catch (e: any) { 
-      showToast(e.message || "Login failed.", "error");
-    } finally { 
-      if (btn) {
-        btn.innerText = "Next"; 
-        btn.removeAttribute('disabled');
+      if (userKeywords.length > 0) {
+        loadKeywordData(userKeywords[0]);
+      } else {
+        renderSidebar(userKeywords, null, loadKeywordData);
+        document.getElementById('keyword-modal')?.classList.remove('hidden'); // Auto-open modal
       }
+    } catch (e: any) { showToast(e.message || "Login failed.", "error"); } finally { 
+      if (btn) { btn.innerText = "Next"; btn.removeAttribute('disabled'); }
     }
   });
 
@@ -279,11 +258,7 @@ const initTrackerApp = async () => {
       return;
     }
     
-    if (btn) {
-      btn.innerHTML = `Saving...`;
-      btn.setAttribute('disabled', 'true');
-    }
-
+    if (btn) { btn.innerHTML = `Saving...`; btn.setAttribute('disabled', 'true'); }
     try {
       await updateKeywords(sessionPin, keywords);
       userKeywords = keywords;
@@ -292,41 +267,34 @@ const initTrackerApp = async () => {
       
       if (keywords.length > 0 && (!currentKeyword || !keywords.includes(currentKeyword))) loadKeywordData(keywords[0]);
       else renderSidebar(keywords, currentKeyword, loadKeywordData);
-    } catch { 
-      showToast("Failed to save changes. Check your connection.", "error"); 
-    } finally { 
-      if (btn) {
-        btn.innerHTML = `Save Property`; 
-        btn.removeAttribute('disabled');
-      }
+    } catch { showToast("Failed to save changes.", "error"); } finally { 
+      if (btn) { btn.innerHTML = `Save Property`; btn.removeAttribute('disabled'); }
     }
   });
 
-  // --- Session Restoration (Optimistic UI Fix) ---
+  // --- Session Restoration ---
   const savedPin = localStorage.getItem('aio_pin');
   if (savedPin) {
     sessionPin = savedPin;
-    // Call UI function immediately to hide the login form
     setWorkspaceView(savedPin);
-    
     try {
       const data = await loginNode(savedPin);
       try { userKeywords = JSON.parse(data.keywords || "[]"); } catch {}
       const kwArea = document.getElementById('user-keywords') as HTMLTextAreaElement;
       if (kwArea) kwArea.value = userKeywords.join('\n');
       
-      if (userKeywords.length > 0) loadKeywordData(userKeywords[0]);
-      else renderSidebar([], null, loadKeywordData);
+      if (userKeywords.length > 0) {
+        loadKeywordData(userKeywords[0]);
+      } else {
+        renderSidebar([], null, loadKeywordData);
+        document.getElementById('keyword-modal')?.classList.remove('hidden'); // Auto-open modal
+      }
     } catch (e: any) { 
       if (e.message && (e.message.includes('Invalid') || e.message.includes('Format'))) {
-        localStorage.removeItem('aio_pin'); 
-        window.location.reload(); // Hard reset if PIN is somehow invalid
-      } else {
-        showToast("Network issue restoring session. Please reload.", "error");
-      }
+        localStorage.removeItem('aio_pin'); window.location.reload(); 
+      } else { showToast("Session error.", "error"); }
     }
   }
 };
 
-// Replaces DOMContentLoaded. Listens for initial load AND Astro View Transitions.
 document.addEventListener('astro:page-load', initTrackerApp);
