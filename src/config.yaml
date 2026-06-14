@@ -1,6 +1,6 @@
 site:
   name: AstroWind
-  site: 'https://astrowind.vercel.app'
+  site: 'samarthupadhyay.com' # Update this with your actual domain
   base: '/'
   trailingSlash: false
 
