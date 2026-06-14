@@ -1,6 +1,6 @@
 site:
   name: AstroWind
-  site: 'samarthupadhyay.com' # Update this with your actual domain
+  site: 'https://samarthupadhyay.com' # Update this with your actual domain
   base: '/'
   trailingSlash: false
 
