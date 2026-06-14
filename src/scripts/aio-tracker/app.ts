@@ -274,7 +274,7 @@ const initTrackerApp = async () => {
     const rawData = (document.getElementById('user-keywords') as HTMLTextAreaElement).value;
     const keywords = rawData.split('\n').map(k => k.trim()).filter(k => k.length > 0);
     
-    if (keywords.length > 15) {
+    if (keywords.length > 30) {
       showToast("Maximum 15 queries allowed.", "error");
       return;
     }
