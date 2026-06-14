@@ -19,7 +19,7 @@ let sourcesLimit = 10;
 let citationsLimit = 10;
 let organicLimit = 10; 
 
-// NEW: Track the actual number of successful searches per category
+// Track the actual number of successful searches per category
 let sourcesSearchCount = 0;
 let citationsSearchCount = 0;
 let organicSearchCount = 0;
@@ -52,19 +52,29 @@ const generateStrictPin = () => {
   return `${letters.charAt(Math.floor(Math.random() * 26))}${letters.charAt(Math.floor(Math.random() * 26))}${Math.floor(1000 + Math.random() * 9000)}`;
 };
 
+// --- Mobile Sidebar Helper ---
+const closeMobileSidebar = () => {
+  document.getElementById('workspace-sidebar')?.classList.remove('translate-x-0');
+  document.getElementById('workspace-sidebar')?.classList.add('-translate-x-full');
+  document.getElementById('sidebar-backdrop')?.classList.remove('block');
+  document.getElementById('sidebar-backdrop')?.classList.add('hidden');
+};
+
 // Filter and Re-render logic updated to pass the exact search counts
 const filterAndRender = () => {
   const filteredSources = activeSourcesData.filter(([url]) => url.toLowerCase().includes(currentSearchTerm));
   const filteredCitations = activeCitationsData.filter(([url]) => url.toLowerCase().includes(currentSearchTerm));
   const filteredOrganic = activeOrganicData.filter(([url]) => url.toLowerCase().includes(currentSearchTerm));
 
-  // FIX: Passing the actual search counts instead of URL counts
+  // Passing the actual search counts instead of URL counts
   renderDataGrid('source-links-list', filteredSources, sourcesLimit, 'btn-more-sources', () => { sourcesLimit += 10; filterAndRender(); }, sourcesSearchCount);
   renderDataGrid('citation-links-list', filteredCitations, citationsLimit, 'btn-more-citations', () => { citationsLimit += 10; filterAndRender(); }, citationsSearchCount);
   renderDataGrid('organic-links-list', filteredOrganic, organicLimit, 'btn-more-organic', () => { organicLimit += 10; filterAndRender(); }, organicSearchCount);
 };
 
 const loadKeywordData = async (keyword: string) => {
+  closeMobileSidebar(); // Close off-canvas menu on mobile when a query is selected
+  
   currentKeyword = keyword;
   sourcesLimit = 10; citationsLimit = 10; organicLimit = 10;
   currentSearchTerm = ""; 
@@ -85,7 +95,7 @@ const loadKeywordData = async (keyword: string) => {
   try {
     const data = await fetchResults(keyword, { days: currentDays, startDate: customStartMs, endDate: customEndMs });
     
-    // NEW FIX: Calculate how many database rows (searches) actually contained data for each category
+    // Calculate how many database rows (searches) actually contained data for each category
     sourcesSearchCount = data.filter((row: any) => {
       try { return JSON.parse(row.source_links || '[]').length > 0; } catch { return false; }
     }).length;
@@ -124,6 +134,18 @@ const loadKeywordData = async (keyword: string) => {
 };
 
 window.addEventListener('DOMContentLoaded', async () => {
+  
+  // --- Mobile Sidebar Event Listeners ---
+  document.getElementById('btn-toggle-sidebar')?.addEventListener('click', () => {
+    document.getElementById('workspace-sidebar')?.classList.remove('-translate-x-full');
+    document.getElementById('workspace-sidebar')?.classList.add('translate-x-0');
+    document.getElementById('sidebar-backdrop')?.classList.remove('hidden');
+    document.getElementById('sidebar-backdrop')?.classList.add('block');
+  });
+  
+  document.getElementById('sidebar-backdrop')?.addEventListener('click', closeMobileSidebar);
+  // --------------------------------------
+
   document.getElementById('url-search')?.addEventListener('input', (e) => {
     currentSearchTerm = (e.target as HTMLInputElement).value.toLowerCase();
     filterAndRender();
