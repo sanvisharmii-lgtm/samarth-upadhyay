@@ -1,0 +1,120 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import TrackerHeader from '~/components/aio-tracker/TrackerHeader.astro';
+import AuthView from '~/components/aio-tracker/AuthView.astro';
+import { Icon } from 'astro-icon/components';
+
+const metadata = { 
+  title: 'AIO Dashboard Report', 
+  ignoreTitleTemplate: true 
+};
+---
+<Layout metadata={metadata}>
+  <!-- Dashboard Config Modal -->
+  <div id="config-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/20 dark:bg-black/40 backdrop-blur-sm p-4 transition-opacity">
+    <div class="bg-white dark:bg-[#1c1d21] w-full max-w-lg p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100">Report Configuration</h2>
+        <button id="btn-close-config" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <Icon name="tabler:x" class="w-5 h-5" />
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-6 mb-8">
+        <div class="flex flex-col gap-2">
+          <label for="my-domain-input" class="text-sm font-medium text-gray-700 dark:text-gray-300">Your Domain</label>
+          <div id="my-domain-container" class="flex flex-wrap items-center gap-2 p-2 bg-[#F8F9FA] dark:bg-[#131418] border border-gray-200 dark:border-gray-700 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 transition-all min-h-[52px] cursor-text">
+            <input type="text" id="my-domain-input" placeholder="e.g., yoursite.com (press Enter)" class="flex-1 bg-transparent border-none focus:ring-0 outline-none text-sm text-gray-900 dark:text-white min-w-[180px] px-2" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="competitors-input" class="text-sm font-medium text-gray-700 dark:text-gray-300">Competitors</label>
+          <div id="competitors-container" class="flex flex-wrap items-center gap-2 p-2 bg-[#F8F9FA] dark:bg-[#131418] border border-gray-200 dark:border-gray-700 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 transition-all min-h-[52px] cursor-text">
+            <input type="text" id="competitors-input" placeholder="Add competitors..." class="flex-1 bg-transparent border-none focus:ring-0 outline-none text-sm text-gray-900 dark:text-white min-w-[150px] px-2" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" id="btn-cancel-config" class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl transition-colors">Cancel</button>
+        <button type="button" id="btn-save-config" class="px-5 py-2.5 text-sm font-medium bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-sm">Save & Generate</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col h-screen bg-[#F8F9FA] dark:bg-[#131418] font-sans text-gray-900 dark:text-gray-100 overflow-hidden">
+    <TrackerHeader />
+    
+    <div class="flex-1 flex flex-col overflow-hidden relative">
+      <AuthView />
+      
+      <main id="view-workspace" class="hidden flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+        <div class="max-w-5xl w-full mx-auto bg-white dark:bg-[#1C1D21] border border-gray-200 dark:border-gray-800 rounded-3xl shadow-sm p-6 sm:p-10 mb-12">
+          
+          <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 pb-6 border-b border-gray-200 dark:border-gray-800 gap-4">
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">Visibility Report</h1>
+              <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm">Compare AIO citations and mentions against competitors.</p>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <button id="btn-open-config" class="p-2.5 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 bg-gray-50 hover:bg-blue-50 dark:bg-gray-800 dark:hover:bg-blue-900/20 rounded-xl transition-colors border border-gray-200 dark:border-gray-700" title="Report Settings">
+                <Icon name="tabler:settings" class="w-5 h-5" />
+              </button>
+              <a href="/aio-tracker/keywords" class="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-xl hover:opacity-90 transition-opacity">
+                Manage Keywords &rarr;
+              </a>
+            </div>
+          </header>
+
+          <!-- Empty/Initial State -->
+          <div id="report-empty" class="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl">
+             <Icon name="tabler:chart-pie" class="w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
+             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">No Data Configured</h3>
+             <p class="text-sm text-gray-500 max-w-sm mb-6">Set up your domain and competitors to generate the visibility report.</p>
+             <button id="btn-empty-config" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+               Configure Report
+             </button>
+          </div>
+
+          <!-- Loading State -->
+          <div id="report-loading" class="hidden items-center justify-center py-16">
+             <Icon name="tabler:loader" class="w-6 h-6 animate-spin text-blue-600 mr-3" />
+             <span class="text-sm font-medium text-gray-500">Analyzing historical search data...</span>
+          </div>
+
+          <!-- Results View -->
+          <div id="report-results" class="hidden">
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+               <div class="p-8 rounded-2xl bg-[#F8F9FA] dark:bg-[#131418] border border-gray-200 dark:border-gray-800 flex flex-col justify-center items-center text-center">
+                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">AIO Citations</span>
+                 <span id="citation-metric" class="text-5xl font-light tracking-tight text-gray-900 dark:text-white">--%</span>
+               </div>
+               <div class="p-8 rounded-2xl bg-[#F8F9FA] dark:bg-[#131418] border border-gray-200 dark:border-gray-800 flex flex-col justify-center items-center text-center">
+                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">AIO Mentions</span>
+                 <span id="organic-metric" class="text-5xl font-light tracking-tight text-gray-900 dark:text-white">--%</span>
+               </div>
+             </div>
+             
+             <div class="overflow-hidden border border-gray-200 dark:border-gray-800 rounded-2xl">
+   <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                     <thead class="text-xs text-gray-700 uppercase bg-[#F8F9FA] dark:bg-gray-800/50 dark:text-gray-300 border-b border-gray-200 dark:border-gray-800">
+                        <tr>
+                           <th scope="col" class="px-6 py-5 font-semibold tracking-wider">Domain</th>
+                           <th scope="col" class="px-6 py-5 text-center font-semibold tracking-wider">AIO Citations</th>
+                           <th scope="col" class="px-6 py-5 text-center font-semibold tracking-wider">AIO Mentions</th>
+                        </tr>
+                     </thead>
+                     <tbody id="competitor-table-body">
+                     </tbody>
+                  </table>
+                </div>
+             </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+</Layout>
+<script src="~/scripts/aio-tracker/dashboard.ts"></script>
